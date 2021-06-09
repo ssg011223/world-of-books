@@ -1,5 +1,6 @@
 package com.codecool.wob.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Listing {
     private UUID id;
     private String title;
@@ -24,7 +26,7 @@ public class Listing {
     @JsonProperty(value = "listing_status")
     private int status;
     private int marketplace;
-    @JsonProperty(value = "upload_time")
+    @JsonProperty(value = "upload_time", access = JsonProperty.Access.READ_ONLY)
     private LocalDate uploadTime;
     @JsonProperty(value = "owner_email_address")
     private String ownerEmailAddress;
