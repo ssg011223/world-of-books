@@ -11,10 +11,7 @@ import java.util.Scanner;
 @Data
 @AllArgsConstructor
 public class ApiRequester {
-    private URL url;
-
-    public String getData() {
-        try {
+    public static String getData(URL url) throws IOException {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
@@ -34,9 +31,5 @@ public class ApiRequester {
                 scanner.close();
                 return sb.toString();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }
