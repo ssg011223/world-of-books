@@ -2,6 +2,7 @@ package com.codecool.wob.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.json.JSONArray;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -31,5 +32,10 @@ public class ApiRequester {
                 scanner.close();
                 return sb.toString();
             }
+    }
+
+    public static JSONArray getJsonArrData(URL url) throws IOException {
+        String data = getData(url);
+        return new JSONArray(data);
     }
 }
