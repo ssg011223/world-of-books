@@ -3,6 +3,8 @@ package com.codecool.wob.service;
 import com.codecool.wob.dao.Dao;
 import com.codecool.wob.model.Marketplace;
 import com.codecool.wob.util.ApiRequester;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,15 +24,13 @@ public class MarketplaceService {
         marketplaceDao.save(marketplaces);
     }
 
-    public Collection<Marketplace> getMarketplaceCollectionFromJsonArr(JSONArray arr) {
+    public Collection<Marketplace> getMarketplaceCollectionFromJsonArr(JSONArray arr) throws JsonProcessingException {
         Collection<Marketplace> res = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
 
         for (int i = 0; i < arr.length(); i++) {
             JSONObject obj = arr.getJSONObject(i);
-            Marketplace marketplace = new Marketplace();
-            marketplace.setId(obj.getInt("id"));
-            marketplace.setName(obj.getString("marketplace_name"));
-            res.add(marketplace);
+            res.add(objectMapper.readValue(obj.toString(), Marketplace.class));
         }
 
         return res;

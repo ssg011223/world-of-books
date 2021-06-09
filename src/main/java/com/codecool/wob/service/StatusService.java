@@ -3,6 +3,8 @@ package com.codecool.wob.service;
 import com.codecool.wob.dao.Dao;
 import com.codecool.wob.model.Status;
 import com.codecool.wob.util.ApiRequester;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,15 +23,13 @@ public class StatusService {
         statusDao.save(statuses);
     }
 
-    public Collection<Status> getStatusCollectionFromJsonArr(JSONArray arr) {
+    public Collection<Status> getStatusCollectionFromJsonArr(JSONArray arr) throws JsonProcessingException {
         Collection<Status> res = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
 
         for (int i = 0; i < arr.length(); i++) {
             JSONObject obj = arr.getJSONObject(i);
-            Status status = new Status();
-            status.setId(obj.getInt("id"));
-            status.setName(obj.getString("status_name"));
-            res.add(status);
+            res.add(objectMapper.readValue(obj.toString(), Status.class));
         }
 
         return res;
