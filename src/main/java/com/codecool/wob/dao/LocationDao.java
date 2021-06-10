@@ -6,6 +6,7 @@ import com.codecool.wob.util.JdbcConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Collection;
 
 public class LocationDao implements Dao<Location>{
     @Override
@@ -41,5 +42,10 @@ public class LocationDao implements Dao<Location>{
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    @Override
+    public Collection<Location> findAll() {
+        return null;
     }
 }

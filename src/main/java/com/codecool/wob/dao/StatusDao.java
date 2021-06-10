@@ -6,6 +6,7 @@ import com.codecool.wob.util.JdbcConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Collection;
 
 public class StatusDao implements Dao<Status> {
     @Override
@@ -29,5 +30,10 @@ public class StatusDao implements Dao<Status> {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    @Override
+    public Collection<Status> findAll() {
+        return null;
     }
 }

@@ -6,6 +6,7 @@ import com.codecool.wob.util.JdbcConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Collection;
 
 public class ListingDao implements Dao<Listing>{
     @Override
@@ -47,5 +48,10 @@ public class ListingDao implements Dao<Listing>{
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    @Override
+    public Collection<Listing> findAll() {
+        return null;
     }
 }
