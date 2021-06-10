@@ -2,7 +2,6 @@ package com.codecool.wob.service;
 
 import com.codecool.wob.dao.Dao;
 import com.codecool.wob.model.Location;
-import com.codecool.wob.model.Marketplace;
 import com.codecool.wob.util.ApiRequester;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,15 +10,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.UUID;
 
 @AllArgsConstructor
 public class LocationService {
-    private Dao<Location> locationDao;
+    private Dao locationDao;
 
     public void saveData(Collection<Location> locations) {
         locationDao.save(locations);

@@ -10,7 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.Collection;
 
 @AllArgsConstructor
 public class MarketplaceService {
-    private Dao<Marketplace> marketplaceDao;
+    private Dao marketplaceDao;
 
     public void saveData(Collection<Marketplace> marketplaces) throws SQLException {
         marketplaceDao.save(marketplaces);

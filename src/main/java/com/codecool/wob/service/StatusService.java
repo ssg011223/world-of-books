@@ -10,14 +10,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
 @AllArgsConstructor
 public class StatusService {
-    private Dao<Status> statusDao;
+    private Dao statusDao;
 
     public void saveData(Collection<Status> statuses) {
         statusDao.save(statuses);
