@@ -6,14 +6,16 @@ import com.codecool.wob.util.JdbcConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 public class ListingDaoImpl implements ListingDao{
     @Override
     public void save(Iterable<Listing> listings) {
         Connection connection = JdbcConnection.getConnection();
-        String sql = "INSERT INTO listing (id, title, description, inventory_item_location_id, listing_price, currency, quantity, listing_status, marketplace, upload_time, owner_email_address) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" +
+        String sql = "INSERT INTO listing (id, title, description, inventory_item_location_id, listing_price, currency, quantity, listing_status, marketplace, upload_time, owner_email_address, saved_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" +
                 "ON CONFLICT (id) DO UPDATE " +
                 "SET title = excluded.title," +
                 "description = excluded.description," +
@@ -24,10 +26,12 @@ public class ListingDaoImpl implements ListingDao{
                 "listing_status = excluded.listing_status," +
                 "marketplace = excluded.marketplace," +
                 "upload_time = excluded.upload_time," +
-                "owner_email_address = excluded.owner_email_address";
+                "owner_email_address = excluded.owner_email_address," +
+                "saved_at = excluded.saved_at";
 
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
+            LocalDateTime now = LocalDateTime.now();
 
             for (Listing listing: listings) {
                 ps.setObject(1, listing.getId());
@@ -41,6 +45,7 @@ public class ListingDaoImpl implements ListingDao{
                 ps.setInt(9, listing.getMarketplace());
                 ps.setObject(10, listing.getUploadTime());
                 ps.setString(11, listing.getOwnerEmailAddress());
+                ps.setObject(12, now);
 
                 ps.addBatch();
             }
@@ -53,5 +58,21 @@ public class ListingDaoImpl implements ListingDao{
     @Override
     public Collection<Listing> findAll() {
         return null;
+    }
+
+    @Override
+    public void deleteBefore(LocalDateTime localDateTime) {
+        Connection connection = JdbcConnection.getConnection();
+        String sql = "DELETE FROM listing WHERE saved_at < ?";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setObject(1, localDateTime);
+
+            ps.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }

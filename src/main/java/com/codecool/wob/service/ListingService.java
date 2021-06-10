@@ -1,6 +1,8 @@
 package com.codecool.wob.service;
 
 import com.codecool.wob.dao.Dao;
+import com.codecool.wob.dao.ListingDao;
+import com.codecool.wob.dao.MarketplaceDao;
 import com.codecool.wob.model.Listing;
 import com.codecool.wob.model.Marketplace;
 import com.codecool.wob.util.ApiRequester;
@@ -14,18 +16,23 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 
 @AllArgsConstructor
 public class ListingService {
-    private Dao listingDao;
-    private Dao marketplaceDao;
+    private ListingDao listingDao;
+    private MarketplaceDao marketplaceDao;
     private final String LOG_FILE_NAME = "importLog.csv";
 
     public void saveData(Collection<Listing> listings) {
         listingDao.save(listings);
+    }
+
+    public void deleteBefore(LocalDateTime localDateTime) {
+        listingDao.deleteBefore(localDateTime);
     }
 
     public Collection<Listing> getListingCollectionFromJsonArr(JSONArray arr) throws IOException {
@@ -62,9 +69,11 @@ public class ListingService {
     }
 
     public void run() throws IOException {
+        LocalDateTime now = LocalDateTime.now();
         JSONArray arr = this.fetchListingJsonData();
         Collection<Listing> listings = this.getListingCollectionFromJsonArr(arr);
         this.saveData(listings);
+        this.deleteBefore(now);
     }
 
     // TODO: Implement validation

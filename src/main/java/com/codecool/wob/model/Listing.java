@@ -30,4 +30,6 @@ public class Listing {
     private LocalDate uploadTime;
     @JsonProperty(value = "owner_email_address")
     private String ownerEmailAddress;
+    @JsonProperty(value = "saved_at")
+    private LocalDate savedAt;
 }
