@@ -3,6 +3,7 @@ package com.codecool.wob.service;
 import com.codecool.wob.dao.Dao;
 import com.codecool.wob.dao.ListingDao;
 import com.codecool.wob.dao.MarketplaceDao;
+import com.codecool.wob.dao.StatusDao;
 import com.codecool.wob.model.Listing;
 import com.codecool.wob.model.Marketplace;
 import com.codecool.wob.util.ApiRequester;
@@ -25,6 +26,7 @@ import java.util.Collection;
 public class ListingService {
     private ListingDao listingDao;
     private MarketplaceDao marketplaceDao;
+    private StatusDao statusDao;
     private final String LOG_FILE_NAME = "importLog.csv";
 
     public void saveData(Collection<Listing> listings) {
@@ -76,7 +78,6 @@ public class ListingService {
         this.deleteBefore(now);
     }
 
-    // TODO: Implement validation
     public String validate(JSONObject obj) {
         if (!isValidUUID(obj.getString("id"))) return "id";
         if (!isValidTitle(obj.getString("title"))) return "title";
@@ -85,7 +86,7 @@ public class ListingService {
         if (!isValidListingPrice(obj.getDouble("listing_price"))) return "listing_price";
         if (!isValidCurrency(obj.getString("currency"))) return "currency";
         if (!isValidQuantity(obj.getInt("quantity"))) return "quantity";
-        if (obj.isNull("listing_status") || obj.getInt("listing_status") < 1 || obj.getInt("listing_status") > 4 ) return "listing_status";
+        if (obj.isNull("listing_status") || !statusDao.isExisting(obj.getInt("listing_status"))) return "listing_status";
         if (obj.isNull("marketplace")) return "marketplace";
         if (!isValidOwnerEmailAddress(obj.getString("owner_email_address"))) return "owner_email_address";
         return "";
