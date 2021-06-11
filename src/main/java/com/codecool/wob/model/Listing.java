@@ -17,7 +17,7 @@ public class Listing {
     private UUID id;
     private String title;
     private String description;
-    @JsonProperty(value = "inventory_item_location_id")
+    @JsonProperty(value = "location_id")
     private UUID inventoryItemLocationId;
     @JsonProperty(value = "listing_price")
     private int price;
@@ -30,4 +30,6 @@ public class Listing {
     private LocalDate uploadTime;
     @JsonProperty(value = "owner_email_address")
     private String ownerEmailAddress;
+    @JsonProperty(value = "saved_at")
+    private LocalDate savedAt;
 }

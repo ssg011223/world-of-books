@@ -38,7 +38,8 @@ create table if not exists listing
         constraint listing_marketplace_id_fk
             references marketplace,
     upload_time                date,
-    owner_email_address        text    not null
+    owner_email_address        text    not null,
+    saved_at    timestamp not null
 );
 
 create unique index if not exists listing_id_uindex
