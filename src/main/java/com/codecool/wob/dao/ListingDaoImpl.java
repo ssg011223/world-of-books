@@ -1,14 +1,20 @@
 package com.codecool.wob.dao;
 
 import com.codecool.wob.model.Listing;
+import com.codecool.wob.model.report.MonthlyReport;
 import com.codecool.wob.util.JdbcConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class ListingDaoImpl implements ListingDao{
     @Override
@@ -73,6 +79,62 @@ public class ListingDaoImpl implements ListingDao{
             ps.execute();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<MonthlyReport> getMonthlyReports() {
+        Connection connection = JdbcConnection.getConnection();
+        String sql = "SELECT month,\n" +
+                "       sum(CASE WHEN marketplace_name = 'EBAY' THEN count END) AS total_ebay_listing_count,\n" +
+                "       sum(CASE WHEN marketplace_name = 'EBAY' THEN total_listing_price END ) AS total_ebay_listing_price,\n" +
+                "       sum(CASE WHEN marketplace_name = 'EBAY' THEN average_listing_price END) AS average_ebay_listing_price,\n" +
+                "       sum(CASE WHEN marketplace_name = 'AMAZON' THEN count END) AS total_amazon_listing_count,\n" +
+                "       sum(CASE WHEN marketplace_name = 'AMAZON' THEN total_listing_price END ) AS total_amazon_listing_price,\n" +
+                "       sum(CASE WHEN marketplace_name = 'AMAZON' THEN average_listing_price END) AS average_amazon_listing_price\n" +
+                "FROM\n" +
+                "(SELECT date_trunc('month', upload_time) AS month,\n" +
+                "       count(listing.id) as count,\n" +
+                "       m.marketplace_name,\n" +
+                "       avg(listing_price) as average_listing_price,\n" +
+                "       sum(listing_price) as total_listing_price\n" +
+                "FROM listing\n" +
+                "JOIN marketplace m on m.id = listing.marketplace\n" +
+                "WHERE upload_time IS NOT NULL\n" +
+                "GROUP BY date_trunc('month', upload_time), m.marketplace_name\n" +
+                "ORDER BY date_trunc('month', upload_time)) as lm\n" +
+                "GROUP BY month";
+
+        try {
+            ResultSet rs = connection.createStatement().executeQuery(sql);
+            List<MonthlyReport> reports = new ArrayList<>();
+            LocalDate counter = null;
+
+            while (rs.next()) {
+                if (rs.getObject("month") == null) continue;
+                LocalDate month = rs.getDate("month").toLocalDate();
+                if (counter == null) counter = LocalDate.of(month.getYear(), month.getMonth(), month.getDayOfMonth());
+                if (!counter.isEqual(month)) {
+                    while (!counter.isEqual(month)) {
+                        MonthlyReport emptyReport = new MonthlyReport();
+                        emptyReport.setMonth(counter);
+                        reports.add(emptyReport);
+                        counter = counter.plusMonths(1);
+                    }
+                }
+                reports.add(new MonthlyReport(month,
+                        rs.getInt("total_ebay_listing_count"),
+                        rs.getInt("total_ebay_listing_price"),
+                        rs.getDouble("average_ebay_listing_price"),
+                        rs.getInt("total_amazon_listing_count"),
+                        rs.getInt("total_amazon_listing_price"),
+                        rs.getDouble("average_amazon_listing_price")));
+                counter = counter.plusMonths(1);
+            }
+            return reports;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return Collections.emptyList();
         }
     }
 }
