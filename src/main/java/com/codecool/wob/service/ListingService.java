@@ -9,6 +9,8 @@ import com.codecool.wob.model.Marketplace;
 import com.codecool.wob.model.report.Report;
 import com.codecool.wob.util.ApiRequester;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.AllArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,6 +31,7 @@ public class ListingService {
     private MarketplaceDao marketplaceDao;
     private StatusDao statusDao;
     private final String LOG_FILE_NAME = "importLog.csv";
+    private final String REPORT_FILE_NAME = "report.json";
 
     public void saveData(Collection<Listing> listings) {
         listingDao.save(listings);
@@ -97,6 +100,17 @@ public class ListingService {
         Report report = listingDao.getTotalReportWithoutMonthlyReports();
         report.setMonthlyReports(listingDao.getMonthlyReports());
         return report;
+    }
+
+    public void saveReportAsJsonFile(Report report) throws IOException {
+        FileWriter writer = new FileWriter(REPORT_FILE_NAME);
+        new GsonBuilder()
+                .setPrettyPrinting()
+                .serializeNulls()
+                .create()
+                .toJson(report, writer);
+        writer.flush();
+        writer.close();
     }
 
     private boolean isValidUUID(String str) {
