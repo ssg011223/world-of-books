@@ -1,6 +1,5 @@
 package com.codecool.wob.service;
 
-import com.codecool.wob.dao.Dao;
 import com.codecool.wob.dao.ListingDao;
 import com.codecool.wob.dao.MarketplaceDao;
 import com.codecool.wob.dao.StatusDao;
@@ -9,7 +8,6 @@ import com.codecool.wob.model.Marketplace;
 import com.codecool.wob.model.report.Report;
 import com.codecool.wob.util.ApiRequester;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.AllArgsConstructor;
 import org.json.JSONArray;
@@ -27,9 +25,9 @@ import java.util.Collection;
 
 @AllArgsConstructor
 public class ListingService {
-    private ListingDao listingDao;
-    private MarketplaceDao marketplaceDao;
-    private StatusDao statusDao;
+    private final ListingDao listingDao;
+    private final MarketplaceDao marketplaceDao;
+    private final StatusDao statusDao;
     private final String LOG_FILE_NAME = "importLog.csv";
     private final String REPORT_FILE_NAME = "report.json";
 
@@ -143,10 +141,6 @@ public class ListingService {
 
     private boolean isValidOwnerEmailAddress(String str) {
         return str != null && str.matches("^[\\w-_.+]*[\\w-_.]@([\\w]+\\.)+[\\w]+[\\w]$");
-    }
-
-    private boolean isInteger(String str) {
-        return str.matches("^[0-9]+$");
     }
 
 }

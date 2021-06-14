@@ -12,14 +12,13 @@ import java.util.Collection;
 public class StatusDaoImp implements StatusDao {
     @Override
     public void save(Iterable<Status> statuses) {
-        Connection connection = JdbcConnection.getConnection();
         String sql = "INSERT INTO status (id, status_name)" +
                 "VALUES (?, ?)" +
                 "ON CONFLICT (id) DO UPDATE " +
                 "SET status_name = excluded.status_name";
 
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
+        try (Connection connection = JdbcConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
 
             for (Status status: statuses) {
                 ps.setInt(1, status.getId());
@@ -28,8 +27,6 @@ public class StatusDaoImp implements StatusDao {
                 ps.addBatch();
             }
             ps.executeBatch();
-            ps.close();
-            connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -42,11 +39,10 @@ public class StatusDaoImp implements StatusDao {
 
     @Override
     public boolean isExisting(Integer id) {
-        Connection connection = JdbcConnection.getConnection();
         String sql = "SELECT id FROM status WHERE id = ?";
 
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
+        try (Connection connection = JdbcConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
 
             ps.setInt(1, id);
 
@@ -55,8 +51,6 @@ public class StatusDaoImp implements StatusDao {
             boolean res = rs.next();
 
             rs.close();
-            ps.close();
-            connection.close();
 
             return res;
         } catch (SQLException throwables) {

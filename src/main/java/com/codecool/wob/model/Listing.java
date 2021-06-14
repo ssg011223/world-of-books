@@ -20,7 +20,7 @@ public class Listing {
     @JsonProperty(value = "location_id")
     private UUID inventoryItemLocationId;
     @JsonProperty(value = "listing_price")
-    private int price;
+    private double price;
     private String currency;
     private int quantity;
     @JsonProperty(value = "listing_status")

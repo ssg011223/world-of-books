@@ -2,7 +2,6 @@ package com.codecool.wob.dao;
 
 import com.codecool.wob.model.Marketplace;
 import com.codecool.wob.util.JdbcConnection;
-import org.json.JSONObject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,14 +15,13 @@ import java.util.List;
 public class MarketplaceDaoImp implements MarketplaceDao{
     @Override
     public void save(Iterable<Marketplace> marketplaces) {
-        Connection connection = JdbcConnection.getConnection();
         String sql = "INSERT INTO marketplace (id, marketplace_name)" +
                 "VALUES (?, ?)" +
                 "ON CONFLICT (id) DO UPDATE " +
                 "SET marketplace_name = excluded.marketplace_name";
 
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
+        try (Connection connection = JdbcConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
 
             for (Marketplace marketplace: marketplaces) {
                 ps.setInt(1, marketplace.getId());
@@ -39,11 +37,10 @@ public class MarketplaceDaoImp implements MarketplaceDao{
 
     @Override
     public Collection<Marketplace> findAll() {
-        Connection connection = JdbcConnection.getConnection();
         String sql = "SELECT * FROM marketplace";
 
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
+        try (Connection connection = JdbcConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
             List<Marketplace> marketplaces = new ArrayList<>();
 

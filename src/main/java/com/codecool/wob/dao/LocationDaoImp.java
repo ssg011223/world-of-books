@@ -11,7 +11,6 @@ import java.util.Collection;
 public class LocationDaoImp implements LocationDao{
     @Override
     public void save(Iterable<Location> locations) {
-        Connection connection = JdbcConnection.getConnection();
         String sql = "INSERT INTO location (id, manager_name, phone, address_primary, address_secondary, country, town, postal_code)" +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)" +
                 "ON CONFLICT (id) DO UPDATE " +
@@ -23,8 +22,8 @@ public class LocationDaoImp implements LocationDao{
                 "town = excluded.town," +
                 "postal_code = excluded.postal_code";
 
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
+        try (Connection connection = JdbcConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
 
             for (Location location: locations) {
                 ps.setObject(1, location.getId());

@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
+/**
+ * Must be initialized with correct values before calling getConnection!
+ */
 @AllArgsConstructor
 public class JdbcConnection {
     private static String jdbcUrl;
@@ -19,12 +21,7 @@ public class JdbcConnection {
         JdbcConnection.password = password;
     }
 
-    public static Connection getConnection() {
-        try {
-            return DriverManager.getConnection(jdbcUrl, username, password);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return null;
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(jdbcUrl, username, password);
     }
 }

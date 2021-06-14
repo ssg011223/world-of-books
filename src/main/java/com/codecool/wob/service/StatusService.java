@@ -1,6 +1,5 @@
 package com.codecool.wob.service;
 
-import com.codecool.wob.dao.Dao;
 import com.codecool.wob.dao.StatusDao;
 import com.codecool.wob.model.Status;
 import com.codecool.wob.util.ApiRequester;
@@ -17,7 +16,7 @@ import java.util.Collection;
 
 @AllArgsConstructor
 public class StatusService {
-    private StatusDao statusDao;
+    private final StatusDao statusDao;
 
     public void saveData(Collection<Status> statuses) {
         statusDao.save(statuses);
