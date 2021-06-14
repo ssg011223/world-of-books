@@ -1,6 +1,7 @@
 package com.codecool.wob.service;
 
 import com.codecool.wob.dao.Dao;
+import com.codecool.wob.dao.LocationDao;
 import com.codecool.wob.model.Location;
 import com.codecool.wob.util.ApiRequester;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,7 +17,7 @@ import java.util.Collection;
 
 @AllArgsConstructor
 public class LocationService {
-    private Dao locationDao;
+    private LocationDao locationDao;
 
     public void saveData(Collection<Location> locations) {
         locationDao.save(locations);
