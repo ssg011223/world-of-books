@@ -21,7 +21,7 @@ public class LocationServiceTest {
     private static LocationService locationService;
 
     @BeforeAll
-    private static void init() {
+    public static void init() {
         locationService = new LocationService(locationDao);
     }
 
