@@ -45,7 +45,7 @@ public class ListingDaoImpl implements ListingDao{
                 ps.setString(2, listing.getTitle());
                 ps.setString(3, listing.getDescription());
                 ps.setObject(4, listing.getInventoryItemLocationId());
-                ps.setInt(5, listing.getPrice());
+                ps.setDouble(5, listing.getPrice());
                 ps.setString(6, listing.getCurrency());
                 ps.setInt(7, listing.getQuantity());
                 ps.setInt(8, listing.getStatus());
