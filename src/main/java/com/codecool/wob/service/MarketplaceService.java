@@ -1,6 +1,5 @@
 package com.codecool.wob.service;
 
-import com.codecool.wob.dao.Dao;
 import com.codecool.wob.dao.MarketplaceDao;
 import com.codecool.wob.model.Marketplace;
 import com.codecool.wob.util.ApiRequester;
@@ -18,7 +17,7 @@ import java.util.Collection;
 
 @AllArgsConstructor
 public class MarketplaceService {
-    private MarketplaceDao marketplaceDao;
+    private final MarketplaceDao marketplaceDao;
 
     public void saveData(Collection<Marketplace> marketplaces) throws SQLException {
         marketplaceDao.save(marketplaces);
