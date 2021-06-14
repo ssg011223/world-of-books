@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,7 +19,6 @@ import java.util.List;
 public class ListingDaoImpl implements ListingDao{
     @Override
     public void save(Iterable<Listing> listings) {
-        Connection connection = JdbcConnection.getConnection();
         String sql = "INSERT INTO listing (id, title, description, inventory_item_location_id, listing_price, currency, quantity, listing_status, marketplace, upload_time, owner_email_address, saved_at) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" +
                 "ON CONFLICT (id) DO UPDATE " +
@@ -36,8 +34,8 @@ public class ListingDaoImpl implements ListingDao{
                 "owner_email_address = excluded.owner_email_address," +
                 "saved_at = excluded.saved_at";
 
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
+        try (Connection connection = JdbcConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             LocalDateTime now = LocalDateTime.now();
 
             for (Listing listing: listings) {
@@ -69,11 +67,10 @@ public class ListingDaoImpl implements ListingDao{
 
     @Override
     public void deleteBefore(LocalDateTime localDateTime) {
-        Connection connection = JdbcConnection.getConnection();
         String sql = "DELETE FROM listing WHERE saved_at < ?";
 
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
+        try (Connection connection = JdbcConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
 
             ps.setObject(1, localDateTime);
 
@@ -85,7 +82,6 @@ public class ListingDaoImpl implements ListingDao{
 
     @Override
     public List<MonthlyReport> getMonthlyReports() {
-        Connection connection = JdbcConnection.getConnection();
         String sql = "SELECT month,\n" +
                 "       sum(CASE WHEN marketplace_name = 'EBAY' THEN count END) AS total_ebay_listing_count,\n" +
                 "       sum(CASE WHEN marketplace_name = 'EBAY' THEN total_listing_price END ) AS total_ebay_listing_price,\n" +
@@ -106,8 +102,8 @@ public class ListingDaoImpl implements ListingDao{
                 "ORDER BY date_trunc('month', upload_time)) as lm\n" +
                 "GROUP BY month";
 
-        try {
-            ResultSet rs = connection.createStatement().executeQuery(sql);
+        try (Connection connection = JdbcConnection.getConnection();
+             ResultSet rs = connection.createStatement().executeQuery(sql)) {
             List<MonthlyReport> reports = new ArrayList<>();
             LocalDate counter = null;
 
@@ -132,7 +128,6 @@ public class ListingDaoImpl implements ListingDao{
                         rs.getDouble("average_amazon_listing_price")));
                 counter = counter.plusMonths(1);
             }
-            connection.close();
             return reports;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -142,7 +137,6 @@ public class ListingDaoImpl implements ListingDao{
 
     @Override
     public Report getTotalReportWithoutMonthlyReports() {
-        Connection connection = JdbcConnection.getConnection();
         String sql = "SELECT sum(count) AS total_listing_count,\n" +
                 "       sum(CASE WHEN marketplace_name = 'EBAY' THEN count END) AS total_ebay_listing_count,\n" +
                 "       sum(CASE WHEN marketplace_name = 'EBAY' THEN total_listing_price END ) AS total_ebay_listing_price,\n" +
@@ -160,8 +154,8 @@ public class ListingDaoImpl implements ListingDao{
                 "     WHERE upload_time IS NOT NULL\n" +
                 "     GROUP BY m.marketplace_name) as lm";
 
-        try {
-            ResultSet rs = connection.createStatement().executeQuery(sql);
+        try (Connection connection = JdbcConnection.getConnection();
+             ResultSet rs = connection.createStatement().executeQuery(sql)) {
             Report report = new Report();
 
             if (rs.next()) {
@@ -175,7 +169,6 @@ public class ListingDaoImpl implements ListingDao{
             }
 
             report.setMonthlyReports(Collections.emptyList());
-            connection.close();
             return report;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
