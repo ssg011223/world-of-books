@@ -28,7 +28,7 @@ create table if not exists listing
     title                      text    not null,
     description                text    not null,
     inventory_item_location_id uuid    not null,
-    listing_price              integer not null,
+    listing_price              numeric not null,
     currency                   text    not null,
     quantity                   integer not null,
     listing_status             integer not null
