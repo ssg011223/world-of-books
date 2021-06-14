@@ -1,6 +1,5 @@
 package com.codecool.wob.service;
 
-import com.codecool.wob.dao.Dao;
 import com.codecool.wob.dao.LocationDao;
 import com.codecool.wob.model.Location;
 import com.codecool.wob.util.ApiRequester;
@@ -17,7 +16,7 @@ import java.util.Collection;
 
 @AllArgsConstructor
 public class LocationService {
-    private LocationDao locationDao;
+    private final LocationDao locationDao;
 
     public void saveData(Collection<Location> locations) {
         locationDao.save(locations);
