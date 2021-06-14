@@ -57,7 +57,7 @@ public class LocationServiceTest {
     }
 
     @Test
-    public void getLocationCollectionFromJsonArr_InvalidJsonArray_ThrowsException() throws JsonProcessingException {
+    public void getLocationCollectionFromJsonArr_InvalidJsonArray_ThrowsException() {
         JSONArray arr = new JSONArray("[{\"invalidfield\": \"value\"}]");
 
         assertThrows(JsonProcessingException.class, () -> locationService.getLocationCollectionFromJsonArr(arr));
