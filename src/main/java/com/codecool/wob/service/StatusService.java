@@ -1,6 +1,7 @@
 package com.codecool.wob.service;
 
 import com.codecool.wob.dao.Dao;
+import com.codecool.wob.dao.StatusDao;
 import com.codecool.wob.model.Status;
 import com.codecool.wob.util.ApiRequester;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,7 +17,7 @@ import java.util.Collection;
 
 @AllArgsConstructor
 public class StatusService {
-    private Dao statusDao;
+    private StatusDao statusDao;
 
     public void saveData(Collection<Status> statuses) {
         statusDao.save(statuses);
