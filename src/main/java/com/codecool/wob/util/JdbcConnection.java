@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Must be initialized with correct values before calling getConnection!
+ */
 @AllArgsConstructor
 public class JdbcConnection {
     private static String jdbcUrl;
